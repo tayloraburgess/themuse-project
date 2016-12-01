@@ -7,22 +7,26 @@
     <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
   </div>
   <form id='main' action='/posts' method='post'>
-    <select name='tag'>
-      <option value=''>All</option>
-      {% for tag in filter_data %}
-        <option 
-          value='{{ tag }}' 
-          {% if tag == default %}
-            selected='selected'
-          {% endif %}
-        >
-          {{ tag }}
-        </option>
-      {% endfor %}
-    </select>
+    <div class='filter-container'>
+      <div class='filter'>
+        <select name='tag'>
+          <option value=''>All</option>
+          {% for tag in filter_data %}
+            <option 
+              value='{{ tag }}' 
+              {% if tag == default %}
+                selected='selected'
+              {% endif %}
+            >
+              {{ tag }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
     <button type='submit'>Filter</button>
   </form>
   {% for post in posts %}
-  <p>{{ post.name }}</p>
+  <p><a href='{{ post.refs.landing_page }}'>{{ post.name }}</a></p>
   {% endfor %}
 {% endblock %}

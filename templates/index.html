@@ -7,61 +7,77 @@
     <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
   </div>
   <form id='main' action='/' method='post'>
-    <select name='company'>
-      <option value=''>All</option>
-      {% for company in filter_data['companies'] %}
-        <option 
-          value='{{ company }}'
-          {% if company == default['company'] %}
-            selected='selected'
-          {% endif %}
-          >
-            {{ company }}
-        </option>
-      {% endfor %}
-    </select>
-    <select name='category'>
-      <option value=''>All</option>
-      {% for category in filter_data['categories'] %}
-        <option
-          value='{{ category }}'
-          {% if category == default['category'] %}
-            selected='selected'
-          {% endif %}
-        >
-          {{ category }}
-        </option>
-      {% endfor %}
-    </select>
-    <select name='level'>
-      <option value=''>All</option>
-      {% for level in filter_data['levels'] %}
-        <option
-          value='{{ level }}' 
-          {% if level == default['level'] %}
-            selected='selected'
-          {% endif %}
-        >
-          {{ level }}
-        </option>
-      {% endfor %}
-    </select>
-    <select name='location'>
-      <option value=''>All</option>
-      {% for location in filter_data['locations'] %}
-      <option 
-        value='{{ location }}' 
-          {% if location == default['location'] %}
-            selected='selected'
-          {% endif %}
-        >
-          {{ location }}
-      </option>
-      {% endfor %}
-    </select>
-    <button type='submit'>Filter</button>
+    <div class='filter-container'>
+      <div class='filter'>
+        <p>Company</p>
+        <select name='company'>
+          <option value=''>All</option>
+          {% for company in filter_data['companies'] %}
+            <option 
+              value='{{ company }}'
+              {% if company == default['company'] %}
+                selected='selected'
+              {% endif %}
+              >
+                {{ company }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class='filter'>
+        <p>Category</p>
+        <select name='category'>
+          <option value=''>All</option>
+          {% for category in filter_data['categories'] %}
+            <option
+              value='{{ category }}'
+              {% if category == default['category'] %}
+                selected='selected'
+              {% endif %}
+            >
+              {{ category }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class='filter'>
+        <p>Level</p>
+        <select name='level'>
+          <option value=''>All</option>
+          {% for level in filter_data['levels'] %}
+            <option
+              value='{{ level }}' 
+              {% if level == default['level'] %}
+                selected='selected'
+              {% endif %}
+            >
+              {{ level }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class='filter'>
+        <p>Location</p>
+        <select name='location'>
+          <option value=''>All</option>
+          {% for location in filter_data['locations'] %}
+          <option 
+            value='{{ location }}' 
+              {% if location == default['location'] %}
+                selected='selected'
+              {% endif %}
+            >
+              {{ location }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div>
+      <button type='submit'>Filter</button>
+    </div>
   </form>
   {% for job in jobs %}
-  <p>{{ job.name }}</p>
+  <p><a href='{{ job.refs.landing_page }}'>{{ job.name }}</a></p>
   {% endfor %} 
 {% endblock %}

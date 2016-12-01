@@ -7,6 +7,10 @@ div.menu {
   text-align: center;
 }
 
+div.filter {
+  display: inline-block;
+}
+
 .clearfix {
   clear: both;
 }
