@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, request, render_template, send_from_directory
 from werkzeug.contrib.cache import SimpleCache
 import requests
 import json
@@ -107,10 +107,43 @@ def scrape_coach_params():
     else:
         return cache.get('coach_params')
 
-@app.route('/')
+def get_jobs(page=1, company=None, category=None, level=None, location=None):
+    data = {
+        'api_key': environ['THEMUSE_API_KEY'],
+        'page': page,
+        'company': company,
+        'category': category,
+        'level': level,
+        'location': location 
+    } 
+    res = requests.get('https://api-v2.themuse.com/jobs', data)
+    return res.json()['results']
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
     filter_data = scrape_job_params()
-    return render_template('index.html', filter_data=filter_data) 
+    if request.method == 'GET': 
+        jobs = get_jobs()
+        default = {
+            'company': None,
+            'category': None,
+            'level': None,
+            'location': None
+        }
+        return render_template('index.html', filter_data=filter_data, jobs=jobs, default=default) 
+    else:
+        company = request.form['company'] if request.form['company'] else None
+        category = request.form['category'] if request.form['category'] else None
+        level = request.form['level'] if request.form['level'] else None
+        location = request.form['location'] if request.form['location'] else None
+        default = {
+            'company': company,
+            'category': category,
+            'level': level,
+            'location': location
+        }
+        jobs = get_jobs(1, company, category, level, location)
+        return render_template('index.html', filter_data=filter_data, jobs=jobs, default=default) 
 
 @app.route('/companies')
 def companies():
