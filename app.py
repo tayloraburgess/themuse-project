@@ -152,4 +152,7 @@ def posts_route():
 def serve_css(path):
     return send_from_directory('static/css', path)
 
-app.run()
+if 'PORT' in os.environ:
+    app.run(port=os.environ['PORT'])
+else:
+    app.run()
