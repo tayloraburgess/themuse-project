@@ -10,5 +10,11 @@
       <h1 class='menu-item'>Posts</h1>
       <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
     </div>
+    <select>
+      {% for tag in filter_data %}
+      <option value='{{ tag }}'>{{ tag }}</option>
+      {% endfor %}
+    </select>
   </body>
+
 </html>

@@ -10,5 +10,20 @@
       <h1 class='menu-item'><a href='/posts'>Posts</a></h1>
       <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
     </div>
+    <select>
+      {% for industry in filter_data['industries'] %}
+      <option value='{{ industry }}'>{{ industry }}</option>
+      {% endfor %}
+    </select>
+    <select>
+      {% for size in filter_data['sizes'] %}
+      <option value='{{ size }}'>{{ size }}</option>
+      {% endfor %}
+    </select>
+    <select>
+      {% for location in filter_data['locations'] %}
+      <option value='{{ location }}'>{{ location }}</option>
+      {% endfor %}
+    </select>
   </body>
 </html>
