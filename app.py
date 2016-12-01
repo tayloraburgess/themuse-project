@@ -119,6 +119,37 @@ def get_jobs(page=1, company=None, category=None, level=None, location=None):
     res = requests.get('https://api-v2.themuse.com/jobs', data)
     return res.json()['results']
 
+def get_companies(page=1, industry=None, size=None, location=None):
+    data = {
+        'api_key': environ['THEMUSE_API_KEY'],
+        'page': page,
+        'industry': industry,
+        'size': size,
+        'location': location 
+    } 
+    res = requests.get('https://api-v2.themuse.com/companies', data)
+    return res.json()['results']
+
+def get_coaches(page=1, offering=None, level=None, specialization=None):
+    data = {
+        'api_key': environ['THEMUSE_API_KEY'],
+        'page': page,
+        'offering': offering,
+        'level': level,
+        'specialization': specialization 
+    } 
+    res = requests.get('https://api-v2.themuse.com/coaches', data)
+    return res.json()['results']
+
+def get_posts(page=1, tag=None):
+    data = {
+        'api_key': environ['THEMUSE_API_KEY'],
+        'page': page,
+        'tag': tag 
+    } 
+    res = requests.get('https://api-v2.themuse.com/posts', data)
+    return res.json()['results']
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     filter_data = scrape_job_params()
@@ -145,20 +176,65 @@ def index():
         jobs = get_jobs(1, company, category, level, location)
         return render_template('index.html', filter_data=filter_data, jobs=jobs, default=default) 
 
-@app.route('/companies')
+@app.route('/companies', methods=['GET', 'POST'])
 def companies():
     filter_data = scrape_company_params()
-    return render_template('companies.html', filter_data=filter_data)
+    if request.method == 'GET':
+        companies = get_companies()
+        default = {
+            'industry': None,
+            'size': None,
+            'location': None
+        }
+        return render_template('companies.html', filter_data=filter_data, companies=companies, default=default)
+    else:
+        industry = request.form['industry'] if request.form['industry'] else None
+        size = request.form['size'] if request.form['size'] else None
+        location = request.form['location'] if request.form['location'] else None
+        default = {
+            'industry': industry,
+            'size': size,
+            'location': location
+        }
+        companies = get_companies(1, industry, size, location)
+        return render_template('companies.html', filter_data=filter_data, companies=companies, default=default) 
 
-@app.route('/posts')
-def posts():
-    filter_data = scrape_post_tags()
-    return render_template('posts.html', filter_data=filter_data)
-
-@app.route('/coaches')
+@app.route('/coaches', methods=['GET', 'POST'])
 def coaches():
     filter_data = scrape_coach_params()
-    return render_template('coaches.html', filter_data=filter_data)
+    if request.method == 'GET':
+        coaches = get_coaches()
+        default = {
+            'offering': None,
+            'level': None,
+            'specialization': None
+        }
+        return render_template('coaches.html', filter_data=filter_data, coaches=coaches, default=default)
+    else:
+        offering = request.form['offering'] if request.form['offering'] else None
+        level = request.form['level'] if request.form['level'] else None
+        specialization = request.form['specialization'] if request.form['specialization'] else None
+        default = {
+            'offering': offering,
+            'level': level,
+            'specialization': specialization
+        }
+        coaches = get_coaches(1, offering, level, specialization)
+        return render_template('coaches.html', filter_data=filter_data, coaches=coaches, default=default) 
+
+
+@app.route('/posts', methods=['GET', 'POST'])
+def posts():
+    filter_data = scrape_post_tags()
+    if request.method == 'GET':
+        posts = get_posts()
+        default = None
+        return render_template('posts.html', filter_data=filter_data, posts=posts, default=default)
+    else:
+        tag = request.form['tag'] if request.form['tag'] else None
+        default = tag
+        posts = get_posts(1, tag)
+        return render_template('posts.html', filter_data=filter_data, posts=posts, default=default) 
 
 @app.route('/css/<path:path>')
 def serve_css(path):

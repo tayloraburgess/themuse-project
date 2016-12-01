@@ -10,11 +10,17 @@
       <h1 class='menu-item'>Posts</h1>
       <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
     </div>
-    <select>
-      {% for tag in filter_data %}
-      <option value='{{ tag }}'>{{ tag }}</option>
-      {% endfor %}
-    </select>
+    <form action='/posts' method='post'>
+      <select name='tag'>
+        <option value=''>All</option>
+        {% for tag in filter_data %}
+        <option value='{{ tag }}' {% if tag == default %}selected='selected'{% endif %}>{{ tag }}</option>
+        {% endfor %}
+      </select>
+      <input type='submit'>
+    </form>
+    {% for post in posts %}
+    <p>{{ post.name }}</p>
+    {% endfor %}
   </body>
-
 </html>

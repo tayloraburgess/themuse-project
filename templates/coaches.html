@@ -10,20 +10,29 @@
       <h1 class='menu-item'><a href='/posts'>Posts</a></h1>
       <h1 class='menu-item'>Coaches</h1>
     </div>
-    <select>
-      {% for offering in filter_data['offerings'] %}
-      <option value='{{ offering }}'>{{ offering }}</option>
-      {% endfor %}
-    </select>
-    <select>
-      {% for level in filter_data['levels'] %}
-      <option value='{{ level }}'>{{ level }}</option>
-      {% endfor %}
-    </select>
-    <select>
-      {% for specialization in filter_data['specializations'] %}
-      <option value='{{ specialization }}'>{{ specialization }}</option>
-      {% endfor %}
-    </select>
+    <form action='/coaches' method='post'>
+      <select name='offering'>
+        <option value=''>All</option>
+        {% for offering in filter_data['offerings'] %}
+        <option value='{{ offering }}' {% if offering == default['offering'] %}selected='selected'{% endif %}>{{ offering }}</option>
+        {% endfor %}
+      </select>
+      <select name='level'>
+        <option value=''>All</option>
+        {% for level in filter_data['levels'] %}
+        <option value='{{ level }}' {% if level == default['level'] %}selected='selected'{% endif %}>{{ level }}</option>
+        {% endfor %}
+      </select>
+      <select name='specialization'>
+        <option value=''>All</option>
+        {% for specialization in filter_data['specializations'] %}
+        <option value='{{ specialization }}' {% if specialization == default['specialization'] %}selected='selected'{% endif %}>{{ specialization }}</option>
+        {% endfor %}
+      </select>
+      <input type='submit'>
+    </form>
+    {% for coach in coaches %}
+    <p>{{ coach.name }}</p>
+    {% endfor %}
   </body>
 </html>
