@@ -117,7 +117,7 @@ def get_jobs(page=1, company=None, category=None, level=None, location=None):
         'location': location 
     } 
     res = requests.get('https://api-v2.themuse.com/jobs', data)
-    return res.json()['results']
+    return res.json()
 
 def get_companies(page=1, industry=None, size=None, location=None):
     data = {
@@ -128,7 +128,7 @@ def get_companies(page=1, industry=None, size=None, location=None):
         'location': location 
     } 
     res = requests.get('https://api-v2.themuse.com/companies', data)
-    return res.json()['results']
+    return res.json()
 
 def get_coaches(page=1, offering=None, level=None, specialization=None):
     data = {
@@ -139,7 +139,7 @@ def get_coaches(page=1, offering=None, level=None, specialization=None):
         'specialization': specialization 
     } 
     res = requests.get('https://api-v2.themuse.com/coaches', data)
-    return res.json()['results']
+    return res.json()
 
 def get_posts(page=1, tag=None):
     data = {
@@ -148,7 +148,7 @@ def get_posts(page=1, tag=None):
         'tag': tag 
     } 
     res = requests.get('https://api-v2.themuse.com/posts', data)
-    return res.json()['results']
+    return res.json()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -161,23 +161,37 @@ def index():
             'level': None,
             'location': None
         }
-        return render_template('index.html', filter_data=filter_data, jobs=jobs, default=default) 
+        context = {
+            'filter_data': filter_data,
+            'jobs': jobs['results'],
+            'page': jobs['page'],
+            'page_count': jobs['page_count'],
+            'default': default
+        }
+        return render_template('index.html', **context) 
     else:
         company = request.form['company'] if request.form['company'] else None
         category = request.form['category'] if request.form['category'] else None
         level = request.form['level'] if request.form['level'] else None
         location = request.form['location'] if request.form['location'] else None
+        jobs = get_jobs(int(request.form['page']), company, category, level, location)
         default = {
             'company': company,
             'category': category,
             'level': level,
             'location': location
         }
-        jobs = get_jobs(1, company, category, level, location)
-        return render_template('index.html', filter_data=filter_data, jobs=jobs, default=default) 
+        context = {
+            'filter_data': filter_data,
+            'jobs': jobs['results'],
+            'page': jobs['page'],
+            'page_count': jobs['page_count'],
+            'default': default
+        }
+        return render_template('index.html', **context) 
 
 @app.route('/companies', methods=['GET', 'POST'])
-def companies():
+def companies_route():
     filter_data = scrape_company_params()
     if request.method == 'GET':
         companies = get_companies()
@@ -186,21 +200,35 @@ def companies():
             'size': None,
             'location': None
         }
-        return render_template('companies.html', filter_data=filter_data, companies=companies, default=default)
+        context = {
+            'filter_data': filter_data,
+            'companies': companies['results'],
+            'page': companies['page'],
+            'page_count': companies['page_count'],
+            'default': default
+        }
+        return render_template('companies.html', **context)
     else:
         industry = request.form['industry'] if request.form['industry'] else None
         size = request.form['size'] if request.form['size'] else None
         location = request.form['location'] if request.form['location'] else None
+        companies = get_companies(int(request.form['page']), industry, size, location)
         default = {
             'industry': industry,
             'size': size,
             'location': location
         }
-        companies = get_companies(1, industry, size, location)
-        return render_template('companies.html', filter_data=filter_data, companies=companies, default=default) 
+        context = {
+            'filter_data': filter_data,
+            'companies': companies['results'],
+            'page': companies['page'],
+            'page_count': companies['page_count'],
+            'default': default
+        }
+        return render_template('companies.html', **context) 
 
 @app.route('/coaches', methods=['GET', 'POST'])
-def coaches():
+def coaches_route():
     filter_data = scrape_coach_params()
     if request.method == 'GET':
         coaches = get_coaches()
@@ -209,32 +237,60 @@ def coaches():
             'level': None,
             'specialization': None
         }
-        return render_template('coaches.html', filter_data=filter_data, coaches=coaches, default=default)
+        context = {
+            'filter_data': filter_data,
+            'coaches': coaches['results'],
+            'page': coaches['page'],
+            'page_count': coaches['page_count'],
+            'default': default
+        }
+        return render_template('coaches.html', **context)
     else:
         offering = request.form['offering'] if request.form['offering'] else None
         level = request.form['level'] if request.form['level'] else None
         specialization = request.form['specialization'] if request.form['specialization'] else None
+        coaches = get_coaches(int(request.form['page']), offering, level, specialization)
         default = {
             'offering': offering,
             'level': level,
             'specialization': specialization
         }
-        coaches = get_coaches(1, offering, level, specialization)
-        return render_template('coaches.html', filter_data=filter_data, coaches=coaches, default=default) 
+        context = {
+            'filter_data': filter_data,
+            'coaches': coaches['results'],
+            'page': coaches['page'],
+            'page_count': coaches['page_count'],
+            'default': default
+        }
+        return render_template('coaches.html', **context) 
 
 
 @app.route('/posts', methods=['GET', 'POST'])
-def posts():
+def posts_route():
     filter_data = scrape_post_tags()
     if request.method == 'GET':
         posts = get_posts()
         default = None
-        return render_template('posts.html', filter_data=filter_data, posts=posts, default=default)
+        context = {
+            'filter_data': filter_data,
+            'posts': posts['results'],
+            'page': posts['page'],
+            'page_count': posts['page_count'],
+            'default': default
+        }
+        return render_template('posts.html', **context)
     else:
         tag = request.form['tag'] if request.form['tag'] else None
+        posts = get_posts(int(request.form['page']), tag)
         default = tag
-        posts = get_posts(1, tag)
-        return render_template('posts.html', filter_data=filter_data, posts=posts, default=default) 
+        context = {
+            'filter_data': filter_data,
+            'posts': posts['results'],
+            'page': posts['page'],
+            'page_count': posts['page_count'],
+            'default': default
+        }
+        return render_template('posts.html', **context) 
 
 @app.route('/css/<path:path>')
 def serve_css(path):

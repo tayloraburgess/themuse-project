@@ -1,26 +1,28 @@
-<!doctype html>
-<html>
-  <head>
-    <link rel='stylesheet' href='static/css/main.css'>
-  </head>
-  <body>
-    <div class='menu'>
-      <h1 class='menu-item'><a href='/'>Jobs</a></h1>
-      <h1 class='menu-item'><a href='/companies'>Companies</a></h1>
-      <h1 class='menu-item'>Posts</h1>
-      <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
-    </div>
-    <form action='/posts' method='post'>
-      <select name='tag'>
-        <option value=''>All</option>
-        {% for tag in filter_data %}
-        <option value='{{ tag }}' {% if tag == default %}selected='selected'{% endif %}>{{ tag }}</option>
-        {% endfor %}
-      </select>
-      <input type='submit'>
-    </form>
-    {% for post in posts %}
-    <p>{{ post.name }}</p>
-    {% endfor %}
-  </body>
-</html>
+{% extends 'default.html' %}
+{% block content %}
+  <div class='menu'>
+    <h1 class='menu-item'><a href='/'>Jobs</a></h1>
+    <h1 class='menu-item'><a href='/companies'>Companies</a></h1>
+    <h1 class='menu-item'>Posts</h1>
+    <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
+  </div>
+  <form id='main' action='/posts' method='post'>
+    <select name='tag'>
+      <option value=''>All</option>
+      {% for tag in filter_data %}
+        <option 
+          value='{{ tag }}' 
+          {% if tag == default %}
+            selected='selected'
+          {% endif %}
+        >
+          {{ tag }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type='submit'>Filter</button>
+  </form>
+  {% for post in posts %}
+  <p>{{ post.name }}</p>
+  {% endfor %}
+{% endblock %}

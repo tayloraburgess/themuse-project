@@ -1,38 +1,54 @@
-<!doctype html>
-<html>
-  <head>
-    <link rel='stylesheet' href='static/css/main.css'>
-  </head>
-  <body>
-    <div class='menu'>
-      <h1 class='menu-item'><a href='/'>Jobs</a></h1>
-      <h1 class='menu-item'>Companies</h1>
-      <h1 class='menu-item'><a href='/posts'>Posts</a></h1>
-      <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
-    </div>
-    <form action='/companies' method='post'>
-      <select name='industry'>
-        <option value=''>All</option>
-        {% for industry in filter_data['industries'] %}
-        <option value='{{ industry }}' {% if industry == default['industry'] %}selected='selected'{% endif %}>{{ industry }}</option>
-        {% endfor %}
-      </select>
-      <select name='size'>
-        <option value=''>All</option>
-        {% for size in filter_data['sizes'] %}
-        <option value='{{ size }}' {% if size == default['size'] %}selected='selected'{% endif %}>{{ size }}</option>
-        {% endfor %}
-      </select>
-      <select name='location'>
-        <option value=''>All</option>
-        {% for location in filter_data['locations'] %}
-        <option value='{{ location }}' {% if location == default['location'] %}selected='selected'{% endif %}>{{ location }}</option>
-        {% endfor %}
-      </select>
-      <input type='submit'>
-    </form>
-    {% for company in companies %}
-    <p>{{ company.name }}</p>
-    {% endfor %}
-  </body>
-</html>
+{% extends 'default.html' %}
+{% block content %}
+  <div class='menu'>
+    <h1 class='menu-item'><a href='/'>Jobs</a></h1>
+    <h1 class='menu-item'>Companies</h1>
+    <h1 class='menu-item'><a href='/posts'>Posts</a></h1>
+    <h1 class='menu-item'><a href='/coaches'>Coaches</a></h1>
+  </div>
+  <form id='main' action='/companies' method='post'>
+    <select name='industry'>
+      <option value=''>All</option>
+      {% for industry in filter_data['industries'] %}
+        <option 
+          value='{{ industry }}'
+          {% if industry == default['industry'] %}
+            selected='selected'
+          {% endif %}
+        >
+          {{ industry }}
+        </option>
+      {% endfor %}
+    </select>
+    <select name='size'>
+      <option value=''>All</option>
+      {% for size in filter_data['sizes'] %}
+        <option 
+          value='{{ size }}'
+          {% if size == default['size'] %}
+            selected='selected'
+          {% endif %}
+        >
+          {{ size }}
+        </option>
+      {% endfor %}
+    </select>
+    <select name='location'>
+      <option value=''>All</option>
+      {% for location in filter_data['locations'] %}
+        <option 
+          value='{{ location }}'
+          {% if location == default['location'] %}
+            selected='selected'
+          {% endif %}
+        >
+          {{ location }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type='submit'>Filter</button>
+  </form>
+  {% for company in companies %}
+  <p>{{ company.name }}</p>
+  {% endfor %}
+{% endblock %}
