@@ -7,3 +7,9 @@ The app interacts with The Muse public API, allowing users to filter Jobs, Compa
 Additionally, the app scrapes The Muse API to create an exhaustive list of categories that can be filtered, and uses a very simple caching system to avoid constant (and very slow) additional requests for this information.
 
 A test deployment of this app is [here](https://stark-forest-99653.herokuapp.com/).
+
+## Running locally
+
+1. Clone this repository.
+
+2. 
